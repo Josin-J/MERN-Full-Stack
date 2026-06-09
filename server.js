@@ -3,6 +3,7 @@ const express = require("express");
 const connectDB = require("./db");
 const taskRoutes = require("./routes/taskRoutes");
 const authRoutes = require("./routes/authRoutes");
+const errorHandler = require("./middleware/errorHandler");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -19,6 +20,8 @@ app.get("/api/health", (req, res) => {
 
 app.use("/api/tasks", taskRoutes);
 app.use("/api/auth", authRoutes);
+
+app.use(errorHandler);
 
 connectDB().then(() => {
   app.listen(PORT, () => {
