@@ -51,6 +51,20 @@ const updateTask = async (req, res, next) => {
   }
 };
 
+const toggleTaskStatus = async (req, res, next) => {
+  try {
+    const task = await Task.findById(req.params.id);
+    if (!task) {
+      return res.status(404).json({ message: "Task not found" });
+    }
+    task.status = task.status === "pending" ? "completed" : "pending";
+    await task.save();
+    res.json(task);
+  } catch (error) {
+    next(error);
+  }
+};
+
 const deleteTask = async (req, res, next) => {
   try {
     const task = await Task.findByIdAndDelete(req.params.id);
@@ -63,4 +77,4 @@ const deleteTask = async (req, res, next) => {
   }
 };
 
-module.exports = { createTask, getTasks, getTaskById, updateTask, deleteTask };
+module.exports = { createTask, getTasks, getTaskById, updateTask, toggleTaskStatus, deleteTask };

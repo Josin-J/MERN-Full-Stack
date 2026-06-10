@@ -12,6 +12,8 @@ const Tasks = () => {
   const [loading, setLoading] = useState(true);
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingTask, setEditingTask] = useState(null);
+  const [search, setSearch] = useState("");
+  const [filter, setFilter] = useState("all");
 
   useEffect(() => {
     fetchTasks();
@@ -66,11 +68,50 @@ const Tasks = () => {
     }
   };
 
+  const toggleTask = async (id) => {
+    try {
+      const res = await axiosInstance.patch(`/tasks/${id}/toggle`, {}, {
+        headers: { Authorization: `Bearer ${user.token}` },
+      });
+      setTasks(tasks.map((task) => (task._id === id ? res.data : task)));
+    } catch (error) {
+      console.error("Error toggling task:", error);
+    }
+  };
+
   if (loading) return <Spinner />;
+
+  const counts = {
+    all: tasks.length,
+    pending: tasks.filter((t) => t.status === "pending").length,
+    completed: tasks.filter((t) => t.status === "completed").length,
+    high: tasks.filter((t) => t.priority === "high").length,
+  };
+
+  const filteredTasks = tasks
+    .filter((task) => task.title.toLowerCase().includes(search.toLowerCase()))
+    .filter((task) => {
+      if (filter === "pending") return task.status === "pending";
+      if (filter === "completed") return task.status === "completed";
+      if (filter === "high") return task.priority === "high";
+      return true;
+    });
 
   return (
     <div>
       <h1>Tasks</h1>
+      <input
+        type="text"
+        placeholder="Search tasks..."
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+      />
+      <div>
+        <button onClick={() => setFilter("all")}>All ({counts.all})</button>
+        <button onClick={() => setFilter("pending")}>Pending ({counts.pending})</button>
+        <button onClick={() => setFilter("completed")}>Completed ({counts.completed})</button>
+        <button onClick={() => setFilter("high")}>High Priority ({counts.high})</button>
+      </div>
       <button onClick={() => setShowAddForm(true)}>Add Task</button>
 
       {showAddForm && (
@@ -92,12 +133,13 @@ const Tasks = () => {
         </div>
       ) : (
         <div>
-          {tasks.map((task) => (
+          {filteredTasks.map((task) => (
             <TaskCard
               key={task._id}
               task={task}
               onEdit={setEditingTask}
               onDelete={deleteTask}
+              onToggle={toggleTask}
             />
           ))}
         </div>
