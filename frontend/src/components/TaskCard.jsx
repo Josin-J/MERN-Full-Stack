@@ -1,4 +1,4 @@
-const TaskCard = ({ task }) => {
+const TaskCard = ({ task, onEdit, onDelete }) => {
   const getStatusColor = (status) => {
     switch (status) {
       case "completed":
@@ -51,6 +51,8 @@ const TaskCard = ({ task }) => {
       {task.dueDate && (
         <p>Due: {new Date(task.dueDate).toLocaleDateString()}</p>
       )}
+      <button onClick={() => onEdit(task)}>Edit</button>
+      <button onClick={() => onDelete(task._id)}>Delete</button>
     </div>
   );
 };
