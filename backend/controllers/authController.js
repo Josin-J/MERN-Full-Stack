@@ -66,4 +66,39 @@ const login = async (req, res, next) => {
   }
 };
 
-module.exports = { register, login };
+const getMe = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.user.id).select("-password");
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    res.json(user);
+  } catch (error) {
+    next(error);
+  }
+};
+
+const updateUser = async (req, res, next) => {
+  try {
+    const { username } = req.body;
+
+    const existingUser = await User.findOne({ username, _id: { $ne: req.user.id } });
+    if (existingUser) {
+      return res.status(400).json({ message: "Username already taken" });
+    }
+
+    const user = await User.findByIdAndUpdate(
+      req.user.id,
+      { username },
+      { new: true }
+    ).select("-password");
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    res.json(user);
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = { register, login, getMe, updateUser };
