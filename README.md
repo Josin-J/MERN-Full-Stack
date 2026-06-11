@@ -2,6 +2,11 @@
 
 A full stack task management application built with MongoDB, Express, React, and Node.js.
 
+## Live Demo
+
+- **Frontend:** https://to-do-list-rose-tau-41.vercel.app/
+- **Backend:** https://mern-full-stack-uaht.onrender.com
+
 ## Features
 
 ### Backend

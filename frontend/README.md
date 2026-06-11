@@ -2,6 +2,10 @@
 
 React app built with Vite.
 
+## Live Demo
+
+https://to-do-list-rose-tau-41.vercel.app/
+
 ## Setup
 
 ```bash
