@@ -16,7 +16,7 @@ const Dashboard = () => {
         });
         setTasks(res.data);
       } catch (error) {
-        console.error("Error fetching tasks:", error);
+        toast.error("Failed to load tasks");
       } finally {
         setLoading(false);
       }

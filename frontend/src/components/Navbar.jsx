@@ -16,7 +16,7 @@ const Navbar = () => {
           });
           setUsername(res.data.username);
         } catch (error) {
-          console.error("Error fetching profile:", error);
+          // silent fail
         }
       };
       fetchProfile();

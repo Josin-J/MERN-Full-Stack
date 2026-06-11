@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useEffect } from "react";
+import axiosInstance from "../utils/axiosInstance";
 
 const AuthContext = createContext();
 
@@ -14,6 +15,24 @@ export const AuthProvider = ({ children }) => {
       setUser({ token });
     }
     setLoading(false);
+  }, []);
+
+  useEffect(() => {
+    const interceptor = axiosInstance.interceptors.response.use(
+      (response) => response,
+      (error) => {
+        if (error.response?.status === 401) {
+          localStorage.removeItem("token");
+          setUser(null);
+          window.location.href = "/login";
+        }
+        return Promise.reject(error);
+      }
+    );
+
+    return () => {
+      axiosInstance.interceptors.response.eject(interceptor);
+    };
   }, []);
 
   const login = (token) => {
