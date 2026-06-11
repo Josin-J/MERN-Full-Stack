@@ -13,49 +13,64 @@ const TaskCard = ({ task, onEdit, onDelete, onToggle }) => {
   const getPriorityColor = (priority) => {
     switch (priority) {
       case "high":
-        return "red";
+        return "#ef4444";
       case "medium":
-        return "yellow";
+        return "#f59e0b";
       case "low":
-        return "blue";
+        return "#22c55e";
       default:
         return "gray";
     }
   };
 
   return (
-    <div>
-      <h3>{task.title}</h3>
-      {task.description && <p>{task.description}</p>}
-      <span
-        style={{
-          backgroundColor: getStatusColor(task.status),
-          color: "white",
-          padding: "4px 8px",
-          borderRadius: "4px",
-        }}
-      >
-        {task.status}
-      </span>
-      <span
-        style={{
-          backgroundColor: getPriorityColor(task.priority),
-          color: "white",
-          padding: "4px 8px",
-          borderRadius: "4px",
-          marginLeft: "8px",
-        }}
-      >
-        {task.priority}
-      </span>
+    <div
+      style={{
+        border: "1px solid #ddd",
+        borderRadius: "8px",
+        padding: "16px",
+        marginBottom: "12px",
+        backgroundColor: "#fff",
+      }}
+    >
+      <h3 style={{ margin: "0 0 8px 0" }}>{task.title}</h3>
+      {task.description && <p style={{ margin: "0 0 8px 0" }}>{task.description}</p>}
+      <div style={{ display: "flex", flexWrap: "wrap", gap: "8px", marginBottom: "8px" }}>
+        <span
+          style={{
+            backgroundColor: getStatusColor(task.status),
+            color: "white",
+            padding: "4px 8px",
+            borderRadius: "4px",
+            fontSize: "12px",
+          }}
+        >
+          {task.status}
+        </span>
+        <span
+          style={{
+            backgroundColor: getPriorityColor(task.priority),
+            color: "white",
+            padding: "4px 8px",
+            borderRadius: "4px",
+            fontSize: "12px",
+          }}
+        >
+          {task.priority}
+        </span>
+      </div>
       {task.dueDate && (
-        <p>Due: {new Date(task.dueDate).toLocaleDateString()}</p>
+        <p style={{ margin: "0 0 8px 0", fontSize: "14px", color: "#666" }}>
+          Due: {new Date(task.dueDate).toLocaleDateString()}
+        </p>
       )}
-      <button onClick={() => onToggle(task._id)}>
-        {task.status === "pending" ? "Mark Complete" : "Mark Pending"}
-      </button>
-      <button onClick={() => onEdit(task)}>Edit</button>
-      <button onClick={() => onDelete(task._id)}>Delete</button>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
+        <button onClick={() => onToggle(task._id)}>
+          {task.status === "pending" ? "Mark Complete" : "Mark Pending"}
+        </button>
+        <button onClick={() => onEdit(task)}>Edit</button>
+        <button onClick={() => onDelete(task._id)}>Delete</button>
+      </div>
     </div>
   );
 };

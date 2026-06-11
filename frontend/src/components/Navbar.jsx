@@ -29,7 +29,6 @@ const Navbar = () => {
 
   return (
     <nav>
-      <Link to="/">Home</Link>
       {isAuthenticated ? (
         <>
           <Link to="/profile">
@@ -41,7 +40,7 @@ const Navbar = () => {
                 width: "30px",
                 height: "30px",
                 borderRadius: "50%",
-                backgroundColor: "#333",
+                backgroundColor: "#555",
                 color: "white",
                 fontWeight: "bold",
                 marginRight: "8px",

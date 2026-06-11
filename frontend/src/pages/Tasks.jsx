@@ -5,6 +5,7 @@ import TaskCard from "../components/TaskCard";
 import AddTaskForm from "../components/AddTaskForm";
 import EditTaskForm from "../components/EditTaskForm";
 import Spinner from "../components/Spinner";
+import toast from "react-hot-toast";
 
 const Tasks = () => {
   const { user } = useAuth();
@@ -26,7 +27,7 @@ const Tasks = () => {
       });
       setTasks(res.data);
     } catch (error) {
-      console.error("Error fetching tasks:", error);
+      toast.error("Failed to load tasks");
     } finally {
       setLoading(false);
     }
@@ -39,8 +40,9 @@ const Tasks = () => {
       });
       setTasks([...tasks, res.data]);
       setShowAddForm(false);
+      toast.success("Task created!");
     } catch (error) {
-      console.error("Error adding task:", error);
+      toast.error(error.response?.data?.message || "Failed to create task");
     }
   };
 
@@ -51,8 +53,9 @@ const Tasks = () => {
       });
       setTasks(tasks.map((task) => (task._id === id ? res.data : task)));
       setEditingTask(null);
+      toast.success("Task updated!");
     } catch (error) {
-      console.error("Error updating task:", error);
+      toast.error(error.response?.data?.message || "Failed to update task");
     }
   };
 
@@ -63,8 +66,9 @@ const Tasks = () => {
         headers: { Authorization: `Bearer ${user.token}` },
       });
       setTasks(tasks.filter((task) => task._id !== id));
+      toast.success("Task deleted!");
     } catch (error) {
-      console.error("Error deleting task:", error);
+      toast.error("Failed to delete task");
     }
   };
 
@@ -74,8 +78,9 @@ const Tasks = () => {
         headers: { Authorization: `Bearer ${user.token}` },
       });
       setTasks(tasks.map((task) => (task._id === id ? res.data : task)));
+      toast.success("Task status updated!");
     } catch (error) {
-      console.error("Error toggling task:", error);
+      toast.error("Failed to toggle task");
     }
   };
 
@@ -98,15 +103,16 @@ const Tasks = () => {
     });
 
   return (
-    <div>
+    <div className="page">
       <h1>Tasks</h1>
       <input
+        className="search-bar"
         type="text"
         placeholder="Search tasks..."
         value={search}
         onChange={(e) => setSearch(e.target.value)}
       />
-      <div>
+      <div className="filter-tabs">
         <button onClick={() => setFilter("all")}>All ({counts.all})</button>
         <button onClick={() => setFilter("pending")}>Pending ({counts.pending})</button>
         <button onClick={() => setFilter("completed")}>Completed ({counts.completed})</button>
@@ -115,19 +121,23 @@ const Tasks = () => {
       <button onClick={() => setShowAddForm(true)}>Add Task</button>
 
       {showAddForm && (
-        <AddTaskForm onAdd={addTask} onClose={() => setShowAddForm(false)} />
+        <div className="form-card">
+          <AddTaskForm onAdd={addTask} onClose={() => setShowAddForm(false)} />
+        </div>
       )}
 
       {editingTask && (
-        <EditTaskForm
-          task={editingTask}
-          onUpdate={updateTask}
-          onClose={() => setEditingTask(null)}
-        />
+        <div className="form-card">
+          <EditTaskForm
+            task={editingTask}
+            onUpdate={updateTask}
+            onClose={() => setEditingTask(null)}
+          />
+        </div>
       )}
 
       {tasks.length === 0 && !showAddForm ? (
-        <div style={{ textAlign: "center", padding: "40px" }}>
+        <div className="empty-state">
           <h2>No tasks yet</h2>
           <p>Create your first task to get started!</p>
         </div>

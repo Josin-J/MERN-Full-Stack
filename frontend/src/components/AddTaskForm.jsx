@@ -7,22 +7,25 @@ const AddTaskForm = ({ onAdd, onClose }) => {
     priority: "medium",
     dueDate: "",
   });
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    onAdd(formData);
+    setLoading(true);
+    await onAdd(formData);
     setFormData({ title: "", description: "", priority: "medium", dueDate: "" });
+    setLoading(false);
   };
 
   return (
     <div>
       <h2>Add New Task</h2>
       <form onSubmit={handleSubmit}>
-        <div>
+        <div className="form-group">
           <label>Title</label>
           <input
             type="text"
@@ -32,7 +35,7 @@ const AddTaskForm = ({ onAdd, onClose }) => {
             required
           />
         </div>
-        <div>
+        <div className="form-group">
           <label>Description</label>
           <textarea
             name="description"
@@ -40,7 +43,7 @@ const AddTaskForm = ({ onAdd, onClose }) => {
             onChange={handleChange}
           />
         </div>
-        <div>
+        <div className="form-group">
           <label>Priority</label>
           <select name="priority" value={formData.priority} onChange={handleChange}>
             <option value="low">Low</option>
@@ -48,7 +51,7 @@ const AddTaskForm = ({ onAdd, onClose }) => {
             <option value="high">High</option>
           </select>
         </div>
-        <div>
+        <div className="form-group">
           <label>Due Date</label>
           <input
             type="date"
@@ -57,8 +60,12 @@ const AddTaskForm = ({ onAdd, onClose }) => {
             onChange={handleChange}
           />
         </div>
-        <button type="submit">Add Task</button>
-        <button type="button" onClick={onClose}>Cancel</button>
+        <button type="submit" disabled={loading}>
+          {loading ? "Adding..." : "Add Task"}
+        </button>
+        <button type="button" onClick={onClose} disabled={loading} style={{ marginLeft: "8px", backgroundColor: "#666" }}>
+          Cancel
+        </button>
       </form>
     </div>
   );

@@ -8,21 +8,24 @@ const EditTaskForm = ({ task, onUpdate, onClose }) => {
     priority: task.priority,
     dueDate: task.dueDate ? task.dueDate.split("T")[0] : "",
   });
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    onUpdate(task._id, formData);
+    setLoading(true);
+    await onUpdate(task._id, formData);
+    setLoading(false);
   };
 
   return (
     <div>
       <h2>Edit Task</h2>
       <form onSubmit={handleSubmit}>
-        <div>
+        <div className="form-group">
           <label>Title</label>
           <input
             type="text"
@@ -32,7 +35,7 @@ const EditTaskForm = ({ task, onUpdate, onClose }) => {
             required
           />
         </div>
-        <div>
+        <div className="form-group">
           <label>Description</label>
           <textarea
             name="description"
@@ -40,14 +43,14 @@ const EditTaskForm = ({ task, onUpdate, onClose }) => {
             onChange={handleChange}
           />
         </div>
-        <div>
+        <div className="form-group">
           <label>Status</label>
           <select name="status" value={formData.status} onChange={handleChange}>
             <option value="pending">Pending</option>
             <option value="completed">Completed</option>
           </select>
         </div>
-        <div>
+        <div className="form-group">
           <label>Priority</label>
           <select name="priority" value={formData.priority} onChange={handleChange}>
             <option value="low">Low</option>
@@ -55,7 +58,7 @@ const EditTaskForm = ({ task, onUpdate, onClose }) => {
             <option value="high">High</option>
           </select>
         </div>
-        <div>
+        <div className="form-group">
           <label>Due Date</label>
           <input
             type="date"
@@ -64,8 +67,12 @@ const EditTaskForm = ({ task, onUpdate, onClose }) => {
             onChange={handleChange}
           />
         </div>
-        <button type="submit">Update Task</button>
-        <button type="button" onClick={onClose}>Cancel</button>
+        <button type="submit" disabled={loading}>
+          {loading ? "Updating..." : "Update Task"}
+        </button>
+        <button type="button" onClick={onClose} disabled={loading} style={{ marginLeft: "8px", backgroundColor: "#666" }}>
+          Cancel
+        </button>
       </form>
     </div>
   );
